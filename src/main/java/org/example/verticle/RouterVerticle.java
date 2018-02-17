@@ -8,7 +8,7 @@ import org.example.data.Data;
 public class RouterVerticle extends AbstractVerticle {
     @Override
     public void start() {
-        vertx.eventBus().localConsumer("router", this::router);
+        vertx.eventBus().consumer("router", this::router);
     }
 
     private void router(Message<String> message) {

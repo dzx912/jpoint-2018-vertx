@@ -26,17 +26,4 @@ public class WsApiVerticle extends AbstractVerticle {
 
         wsServer.closeHandler(aVoid -> consumerSendMessage.unregister());
     }
-
-
-    private void wsConsumer(ServerWebSocket wsServer) {
-        MessageConsumer<String> consumerSendMessage =
-                vertx.eventBus().<String>consumer(wsServer.path(), data -> {
-                    wsServer.writeFinalTextFrame(data.body());
-                    data.reply("ok");
-                });
-        System.out.println(wsServer.path());
-
-        // Снимаем обработчик, после закрытия WebSocket'а
-        wsServer.closeHandler(aVoid -> consumerSendMessage.unregister());
-    }
 }

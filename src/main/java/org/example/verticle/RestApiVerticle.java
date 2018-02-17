@@ -16,12 +16,12 @@ public class RestApiVerticle extends AbstractVerticle {
                     vertx.eventBus().publish("router", request.getBodyAsString());
                     request.response().end("ok");
                 });
-        httpRouter.get("/getUpdates")
-                .handler(request -> {
-                    vertx.eventBus().send("getUpdates", request.getBodyAsString(), result -> {
-                        request.response().end(result.result().body().toString());
-                    });
-                });
+        httpRouter.get("/getHistory")
+                .handler(request ->
+                    vertx.eventBus().send("getHistory", request.getBodyAsString(), result ->
+                        request.response().end(result.result().body().toString())
+                    )
+                );
         httpServer.requestHandler(httpRouter::accept);
         httpServer.listen(8080);
     }
