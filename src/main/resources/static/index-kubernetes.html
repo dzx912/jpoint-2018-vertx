@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="js/wsclient.js"></script>
+        <script src="js/wsclient-kubernetes.js"></script>
     </head>
 
     <body>
         <h1>Chat</h1>
 
         <button id="buttonConnect">Connect</button>
-        <input id="inputToken" type="text" placeholder="My login" size="70">
+        <br/>
+        <label>Token:</label>
+        <input id="inputToken" type="text" placeholder="My login" size="50">
         <br/>
 
         <button id="buttonSend" disabled>Send</button>
-        <input id="inputMessage" type="text" placeholder="text message" size="70">
+        <br/>
+        <label>Text: </label>
+        <input id="inputMessage" type="text" placeholder="text message" size="50">
+        <br/>
+        <label>Receiver:</label>
         <input id="receiverToken" type="text" placeholder="Receiver's login">
         <br/>
 
