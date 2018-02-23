@@ -7,8 +7,7 @@ import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder;
-import org.example.verticle.RestApiVerticle;
-import org.example.verticle.WsApiVerticle;
+import org.example.verticle.RouterVerticle;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -22,7 +21,6 @@ public class Starter {
 
     public static void main(String[] args) throws IOException {
         setupCluster();
-//        deploy(Vertx.vertx());
     }
 
     private static void setupCluster() throws IOException {
@@ -65,10 +63,7 @@ public class Starter {
     }
 
     private static void deploy(Vertx vertx) {
-        vertx.deployVerticle(new WsApiVerticle());
-        vertx.deployVerticle(new RestApiVerticle());
-//        vertx.deployVerticle(new LoggerVerticle());
-//        vertx.deployVerticle(new MongoDbVerticle());
+        vertx.deployVerticle(new RouterVerticle());
     }
 
     private static List<Inet4Address> getNonLoopbackLocalIPv4Addresses() throws IOException {

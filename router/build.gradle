@@ -1,0 +1,31 @@
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+def versionVertx = '3.5.1'
+def versionIgnite = '2.3.0'
+def mainClass = 'org.example.Starter'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'io.vertx', name: 'vertx-core', version: versionVertx
+    compile group: 'io.vertx', name: 'vertx-ignite', version: versionVertx
+
+    compile group: 'org.apache.ignite', name: 'ignite-core', version: versionIgnite
+    compile group: 'org.apache.ignite', name: 'ignite-kubernetes', version: versionIgnite
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Version': version,
+                'Main-Class': mainClass
+    }
+    baseName = project.name + '-fat'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

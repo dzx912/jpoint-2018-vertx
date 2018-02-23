@@ -15,9 +15,27 @@ spec:
     spec:
       containers:
       - name: jbreak-chat
-        image: dzx912/jbreak-chat:13
+        image: dzx912/jbreak-chat:14
         ports:
         - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jbreak-chat-router
+spec:
+  selector:
+    matchLabels:
+      run: jbreak-chat-router
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: jbreak-chat-router
+    spec:
+      containers:
+      - name: jbreak-chat-router
+        image: dzx912/jbreak-chat-router:1
 ---
 apiVersion: v1
 kind: Service
