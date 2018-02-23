@@ -7,17 +7,39 @@ import io.vertx.spi.cluster.ignite.IgniteClusterManager;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi;
 import org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder;
-import org.example.verticle.*;
+import org.example.verticle.RestApiVerticle;
+import org.example.verticle.RouterVerticle;
+import org.example.verticle.WsApiVerticle;
+
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 public class Starter {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException {
         setupCluster();
+//        deploy(Vertx.vertx());
     }
 
-    private static void setupCluster() {
+    private static void setupCluster() throws IOException {
+
         ClusterManager clusterManager = new IgniteClusterManager(getIgniteConfiguration());
 
-        VertxOptions options = new VertxOptions().setClusterManager(clusterManager);
+        List<Inet4Address> inetAddresses = getNonLoopbackLocalIPv4Addresses();
+        String publicClusterHost = inetAddresses.stream().map(Inet4Address::getHostAddress).findFirst().get();
+        System.out.println("publicClusterHost: " + publicClusterHost);
+
+
+        VertxOptions options = new VertxOptions()
+                .setClustered(true)
+                .setClusterManager(clusterManager)
+                .setClusterHost(publicClusterHost);
+
         Vertx.clusteredVertx(options, res -> {
             if (res.succeeded()) {
                 Vertx vertx = res.result();
@@ -47,7 +69,23 @@ public class Starter {
         vertx.deployVerticle(new WsApiVerticle());
         vertx.deployVerticle(new RestApiVerticle());
         vertx.deployVerticle(new RouterVerticle());
-        vertx.deployVerticle(new LoggerVerticle());
-        vertx.deployVerticle(new MongoDbVerticle());
+//        vertx.deployVerticle(new LoggerVerticle());
+//        vertx.deployVerticle(new MongoDbVerticle());
+    }
+
+    private static List<Inet4Address> getNonLoopbackLocalIPv4Addresses() throws IOException {
+        List<Inet4Address> localAddresses = new ArrayList<>();
+
+        Enumeration en = NetworkInterface.getNetworkInterfaces();
+        while (en.hasMoreElements()) {
+            NetworkInterface i = (NetworkInterface) en.nextElement();
+            for (Enumeration en2 = i.getInetAddresses(); en2.hasMoreElements(); ) {
+                InetAddress addr = (InetAddress) en2.nextElement();
+                if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
+                    localAddresses.add((Inet4Address) addr);
+                }
+            }
+        }
+        return localAddresses;
     }
 }

@@ -15,12 +15,9 @@ spec:
     spec:
       containers:
       - name: jbreak-chat
-        image: dzx912/jbreak-chat:2
+        image: dzx912/jbreak-chat:13
         ports:
         - containerPort: 8080
-        - containerPort: 11211 # REST port number.
-        - containerPort: 47100 # communication SPI port number.
-        - containerPort: 47500 # discovery SPI port number.
 ---
 apiVersion: v1
 kind: Service
