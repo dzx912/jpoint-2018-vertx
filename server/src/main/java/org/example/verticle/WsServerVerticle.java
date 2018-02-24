@@ -4,7 +4,7 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.eventbus.MessageConsumer;
 import io.vertx.core.http.ServerWebSocket;
 
-public class WsApiVerticle extends AbstractVerticle {
+public class WsServerVerticle extends AbstractVerticle {
     @Override
     public void start() {
         vertx.createHttpServer()

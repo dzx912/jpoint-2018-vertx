@@ -5,7 +5,7 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
-public class RestApiVerticle extends AbstractVerticle {
+public class RestServerVerticle extends AbstractVerticle {
     @Override
     public void start() {
         HttpServer httpServer = vertx.createHttpServer();
