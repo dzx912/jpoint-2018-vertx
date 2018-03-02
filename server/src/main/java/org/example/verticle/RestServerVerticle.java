@@ -13,16 +13,30 @@ public class RestServerVerticle extends AbstractVerticle {
         httpRouter.route().handler(BodyHandler.create());
         httpRouter.post("/sendMessage")
                 .handler(request -> {
-                    vertx.eventBus().publish("router", request.getBodyAsString());
+                    vertx.eventBus().send("router", request.getBodyAsString());
                     request.response().end("ok");
                 });
         httpRouter.get("/getHistory")
                 .handler(request ->
-                    vertx.eventBus().send("getHistory", request.getBodyAsString(), result ->
-                        request.response().end(result.result().body().toString())
-                    )
+                        vertx.eventBus().send("getHistory", request.getBodyAsString(), result ->
+                                request.response().end(result.result().body().toString())
+                        )
                 );
+        httpRouter.get("/parasite")
+                .handler(request -> {
+                    for (int i = 0; i < 8; i++) {
+                        vertx.eventBus().send("parasite", request.getBodyAsString());
+                    }
+                    request.response().end("ok");
+                });
+        httpRouter.get("/blockingCode")
+                .handler(request -> {
+                    for (int i = 0; i < 8; i++) {
+                        vertx.eventBus().send("blockingCode", request.getBodyAsString());
+                    }
+                    request.response().end("ok");
+                });
         httpServer.requestHandler(httpRouter::accept);
-        httpServer.listen(8080);
+        httpServer.listen(8081);
     }
 }
