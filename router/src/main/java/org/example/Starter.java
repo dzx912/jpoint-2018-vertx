@@ -6,8 +6,7 @@ import org.example.verticle.RouterVerticle;
 public class Starter {
 
     public static void main(String[] args) {
-        new Cluster("jbreak-chat",
-                new RouterVerticle())
+        new Cluster(new RouterVerticle())
                 .run();
     }
 }

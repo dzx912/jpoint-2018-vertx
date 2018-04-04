@@ -4,6 +4,7 @@ version '1.0-SNAPSHOT'
 apply plugin: 'java'
 
 sourceCompatibility = 1.8
+def versionVertx = '3.5.1'
 def mainClass = 'org.example.Starter'
 
 repositories {
@@ -12,6 +13,8 @@ repositories {
 
 dependencies {
     compile project(':cluster')
+
+    compile group: 'io.vertx', name: 'vertx-web', version: versionVertx
 }
 
 task fatJar(type: Jar) {

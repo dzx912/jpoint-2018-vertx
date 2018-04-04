@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compile project(':cluster')
+    compile project(':data')
 }
 
 task fatJar(type: Jar) {

@@ -19,11 +19,21 @@ import java.util.Enumeration;
 import java.util.List;
 
 public class Cluster {
+    private final static String SERVICE_NAME = "chat";
+
     private final List<Verticle> verticles;
     private final String serviceName;
 
+    public Cluster(Verticle verticle) {
+        this(SERVICE_NAME, verticle);
+    }
+
     public Cluster(String serviceName, Verticle verticle) {
         this(serviceName, Collections.singletonList(verticle));
+    }
+
+    public Cluster(List<Verticle> verticles) {
+        this(SERVICE_NAME, verticles);
     }
 
     public Cluster(String serviceName, List<Verticle> verticles) {

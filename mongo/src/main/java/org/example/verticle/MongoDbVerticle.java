@@ -9,20 +9,31 @@ import io.vertx.ext.mongo.MongoClient;
 
 public class MongoDbVerticle extends AbstractVerticle {
     private MongoClient client;
+
     @Override
     public void start() {
+        System.out.println("Start MongoDbVerticle");
+        String uri = "mongodb://mongo:27017";
         client = MongoClient.createShared(vertx, new JsonObject()
+                .put("connection_string", uri)
                 .put("db_name", "my_DB"));
-        vertx.eventBus().consumer("router", this::saveDb);
+        vertx.eventBus().consumer("database.save", this::saveDb);
         vertx.eventBus().consumer("getHistory", this::getHistory);
     }
 
     private void getHistory(Message<String> message) {
-        client.find("message", new JsonObject(),
-                result -> message.reply(Json.encode(result.result()))
+        System.out.println("MongoDbVerticle getHistory");
+        client.find("message",
+                new JsonObject().put("address", message.body()),
+                result -> {
+                    String history = Json.encode(result.result());
+                    message.reply(history);
+                }
         );
     }
+
     private void saveDb(Message<String> message) {
+        System.out.println("MongoDbVerticle save database");
         client.insert("message", new JsonObject(message.body()), this::handler);
     }
 

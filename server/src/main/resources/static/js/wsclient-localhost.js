@@ -69,11 +69,23 @@ document.addEventListener("DOMContentLoaded", function() {
         var data = event.data;
         console.log("message: " + data);
         if(data) {
-            var oldText = outputTextMessage.value;
-
             var jsonText = JSON.parse(data);
-            outputTextMessage.value = jsonText.text + "\n" + oldText;
+
+            if(jsonText.history) {
+                console.log("history: " + jsonText.history);
+                for(var key in jsonText.history) {
+                    var message = jsonText.history[key];
+                    getMessage(message.text);
+                }
+            } else {
+                getMessage(jsonText.text);
+            }
         }
+    }
+
+    function getMessage(textMessage) {
+        var oldText = outputTextMessage.value;
+        outputTextMessage.value = textMessage + "\n" + oldText;
     }
 
     function wsClose(event) {

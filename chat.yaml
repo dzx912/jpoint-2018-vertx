@@ -2,12 +2,64 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: mongo
+spec:
+  selector:
+    matchLabels:
+      run: mongo
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo
+        ports:
+        - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  labels:
+    run: mongo
+spec:
+  selector:
+    run: mongo
+  ports:
+  - port: 27017
+    nodePort: 30002
+  type: LoadBalancer
+#---
+#apiVersion: apps/v1
+#kind: Deployment
+#metadata:
+#  name: jbreak-chat-mongo
+#spec:
+#  selector:
+#    matchLabels:
+#      run: jbreak-chat-mongo
+#  replicas: 1
+#  template:
+#    metadata:
+#      labels:
+#        run: jbreak-chat-mongo
+#    spec:
+#      containers:
+#      - name: jbreak-chat-mongo
+#        image: dzx912/jbreak-chat-mongo:1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: jbreak-chat-server
 spec:
   selector:
     matchLabels:
       run: jbreak-chat-server
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
@@ -15,7 +67,8 @@ spec:
     spec:
       containers:
       - name: jbreak-chat-server
-        image: dzx912/jbreak-chat-server:1
+        image: dzx912/jbreak-chat-server:2
+#        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         - containerPort: 8081
@@ -36,43 +89,8 @@ spec:
     spec:
       containers:
       - name: jbreak-chat-router
-        image: dzx912/jbreak-chat-router:2
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jbreak-chat-logger
-spec:
-  selector:
-    matchLabels:
-      run: jbreak-chat-logger
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        run: jbreak-chat-logger
-    spec:
-      containers:
-      - name: jbreak-chat-logger
-        image: dzx912/jbreak-chat-logger:2
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jbreak-chat-mongo
-spec:
-  selector:
-    matchLabels:
-      run: jbreak-chat-mongo
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        run: jbreak-chat-mongo
-    spec:
-      containers:
-      - name: jbreak-chat-mongo
-        image: dzx912/jbreak-chat-mongo:1
+        image: dzx912/jbreak-chat-router:1
+#        imagePullPolicy: Always
 ---
 apiVersion: v1
 kind: Service

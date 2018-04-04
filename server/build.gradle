@@ -13,6 +13,9 @@ repositories {
 
 dependencies {
     compile project(':cluster')
+    compile project(':data')
+
+    compile group: 'io.vertx', name: 'vertx-mongo-client', version: versionVertx
     compile group: 'io.vertx', name: 'vertx-web', version: versionVertx
 }
 

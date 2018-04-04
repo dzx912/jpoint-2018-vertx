@@ -1,8 +1,7 @@
 package org.example.data;
 
-import io.vertx.core.json.Json;
-
 public class Data {
+    private String from;
     private String address;
     private String text;
 
@@ -22,8 +21,11 @@ public class Data {
         this.text = text;
     }
 
-    @Override
-    public String toString() {
-        return Json.encodePrettily(this);
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 }

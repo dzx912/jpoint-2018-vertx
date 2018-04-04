@@ -17,6 +17,7 @@ public class RouterVerticle extends AbstractVerticle {
             Data data = Json.decodeValue(message.body(), Data.class);
             System.out.println(data);
             vertx.eventBus().publish("/token/" + data.getAddress(), message.body());
+            vertx.eventBus().send("database.save", message.body());
         }
     }
 }

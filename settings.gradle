@@ -1,7 +1,8 @@
 rootProject.name = 'chat'
 include 'router'
-include 'logger'
 include 'cluster'
 include 'server'
 include 'mongo'
+include 'data'
+include 'restServer'
 
