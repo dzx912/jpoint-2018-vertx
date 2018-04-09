@@ -2,6 +2,130 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: chat-ws-server
+spec:
+  selector:
+    matchLabels:
+      run: chat-ws-server
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: chat-ws-server
+    spec:
+      containers:
+      - name: chat-ws-server
+        image: dzx912/chat-ws-server:2
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-router
+spec:
+  selector:
+    matchLabels:
+      run: chat-router
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: chat-router
+    spec:
+      containers:
+      - name: chat-router
+        image: dzx912/chat-router:2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-rest-server
+spec:
+  selector:
+    matchLabels:
+      run: chat-rest-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: chat-rest-server
+    spec:
+      containers:
+      - name: chat-rest-server
+        image: dzx912/chat-rest-server:1
+        ports:
+        - containerPort: 8081
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-client-server
+spec:
+  selector:
+    matchLabels:
+      run: chat-client-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: chat-client-server
+    spec:
+      containers:
+      - name: chat-client-server
+        image: dzx912/chat-client-server:1
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat
+  labels:
+    run: chat
+spec:
+  selector:
+    run: chat-ws-server
+  ports:
+  - name: websocket
+    port: 8080
+    nodePort: 30080
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-rest
+  labels:
+    run: chat-rest
+spec:
+  selector:
+    run: chat-rest-server
+  ports:
+  - name: http
+    port: 8081
+    nodePort: 30081
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-client
+  labels:
+    run: chat-client
+spec:
+  selector:
+    run: chat-client-server
+  ports:
+  - name: http
+    port: 8082
+    nodePort: 30082
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: mongo
 spec:
   selector:
@@ -30,82 +154,21 @@ spec:
     run: mongo
   ports:
   - port: 27017
-    nodePort: 30002
-  type: LoadBalancer
-#---
-#apiVersion: apps/v1
-#kind: Deployment
-#metadata:
-#  name: jbreak-chat-mongo
-#spec:
-#  selector:
-#    matchLabels:
-#      run: jbreak-chat-mongo
-#  replicas: 1
-#  template:
-#    metadata:
-#      labels:
-#        run: jbreak-chat-mongo
-#    spec:
-#      containers:
-#      - name: jbreak-chat-mongo
-#        image: dzx912/jbreak-chat-mongo:1
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: jbreak-chat-server
+ name: chat-mongo
 spec:
-  selector:
-    matchLabels:
-      run: jbreak-chat-server
-  replicas: 2
-  template:
-    metadata:
-      labels:
-        run: jbreak-chat-server
-    spec:
-      containers:
-      - name: jbreak-chat-server
-        image: dzx912/jbreak-chat-server:2
-#        imagePullPolicy: Always
-        ports:
-        - containerPort: 8080
-        - containerPort: 8081
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jbreak-chat-router
-spec:
-  selector:
-    matchLabels:
-      run: jbreak-chat-router
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        run: jbreak-chat-router
-    spec:
-      containers:
-      - name: jbreak-chat-router
-        image: dzx912/jbreak-chat-router:1
-#        imagePullPolicy: Always
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: jbreak-chat
-  labels:
-    run: jbreak-chat
-spec:
-  selector:
-    run: jbreak-chat-server
-  ports:
-  - name: websocket
-    port: 8080
-    nodePort: 30080
-  - name: http
-    port: 8081
-    nodePort: 30081
-  type: LoadBalancer
+ selector:
+   matchLabels:
+     run: chat-mongo
+ replicas: 1
+ template:
+   metadata:
+     labels:
+       run: chat-mongo
+   spec:
+     containers:
+     - name: chat-mongo
+       image: dzx912/chat-mongo:2
